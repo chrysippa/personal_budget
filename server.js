@@ -17,7 +17,7 @@ const generateId = () => {
 const getEnvelopeById = (id) => {
     const foundEnvelope = envelopes.find((e) => {e.id === id});
     if (foundEnvelope) {
-        z
+        return foundEnvelope;
     } else {
         throw new Error("Envelope not found");
     }
@@ -30,6 +30,10 @@ app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send('Hello world!');
+});
+
+app.get('/envelopes', (req, res) => {
+    res.send(JSON.stringify(envelopes));
 });
 
 app.post('/envelopes', (req, res) => {
