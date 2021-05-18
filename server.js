@@ -1,7 +1,7 @@
 // model envelope
 // {id: 0, name: "", limit: 0}
 
-// TODO: add error handling, move helper funcs to other file
+// TODO: move helper funcs to other file
 
 const express = require('express'); 
 const app = express();
@@ -29,28 +29,44 @@ let totalFunds = 0;
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
+app.get('/', (req, res, next) => {
     res.send('Hello world!');
 });
 
-app.get('/envelopes', (req, res) => {
+app.get('/envelopes', (req, res, next) => {
     res.send(JSON.stringify(envelopes));
 });
 
-app.get('/envelopes/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const env = getEnvelopeById(id);
-    res.send(JSON.stringify(env));
+app.get('/envelopes/:id', (req, res, next) => {
+    try {
+        const id = Number(req.params.id);
+        const env = getEnvelopeById(id);
+        res.send(JSON.stringify(env));
+    } catch (err) {
+        err.status = 404;
+        next(err);
+    }
 });
 
-app.post('/envelopes', (req, res) => {
+app.post('/envelopes', (req, res, next) => {
     // should be sent {name: "", limit: 0}
-    const newEnvelope = req.body;
-    const newId = generateId();
-    newEnvelope.id = newId;
-    envelopes.push(newEnvelope);
-    const env = getEnvelopeById(newId);
-    res.status(201).send(JSON.stringify(env));
+    try {
+        const newEnvelope = req.body;
+        const newId = generateId();
+        newEnvelope.id = newId;
+        envelopes.push(newEnvelope);
+        const env = getEnvelopeById(newId);
+        res.status(201).send(JSON.stringify(env));
+    } catch (err) {
+        err.status(400);
+        next(err);
+    }
+});
+
+// error handler
+app.use((err, req, res, next) => {
+    const status = err.status || 500;
+    res.status(status).send(err.message);
 });
 
 app.listen(PORT, () => {
