@@ -43,8 +43,6 @@ app.post('/envelopes', (req, res) => {
     const newId = generateId();
     newEnvelope.id = newId;
     envelopes.push(newEnvelope);
-    console.log(`envelope id is ${newEnvelope.id}. current envelopes:`);
-    envelopes.forEach(e => console.log(e));
     const env = getEnvelopeById(newId);
     res.status(201).send(JSON.stringify(env));
 });
