@@ -37,6 +37,12 @@ app.get('/envelopes', (req, res) => {
     res.send(JSON.stringify(envelopes));
 });
 
+app.get('/envelopes/:id', (req, res) => {
+    const id = Number(req.params.id);
+    const env = getEnvelopeById(id);
+    res.send(JSON.stringify(env));
+});
+
 app.post('/envelopes', (req, res) => {
     // should be sent {name: "", limit: 0}
     const newEnvelope = req.body;
