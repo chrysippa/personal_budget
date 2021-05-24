@@ -24,7 +24,7 @@ const getEnvelopeById = (id) => {
     }
 };
 
-const envelopes = [];
+let envelopes = [];
 let totalFunds = 0;
 
 app.use(bodyParser.json());
@@ -68,9 +68,9 @@ app.post('/envelopes', (req, res, next) => {
 
 app.delete('/envelopes/:id', (req, res, next) => {
     try {
-        const idToDelete = req.params.id;
+        const idToDelete = Number(req.params.id);
         const envToDelete = getEnvelopeById(idToDelete);
-        envelopes.filter(env => env.id !== idToDelete);
+        envelopes = envelopes.filter(env => env.id !== idToDelete);
         res.status(204).send();
     } catch (err) {
         err.status = 400;
