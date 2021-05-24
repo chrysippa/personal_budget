@@ -55,6 +55,9 @@ app.post('/envelopes', (req, res, next) => {
         if (newEnvelope.limit < 0 || typeof newEnvelope.limit !== 'number') {
             throw new Error('Must create envelope with balance 0 or greater');
         }
+        if (typeof newEnvelope.name !== 'string') {
+            throw new Error('Envelope name must be a string');
+        }
         const newId = generateId();
         newEnvelope.id = newId;
         envelopes.push(newEnvelope);
