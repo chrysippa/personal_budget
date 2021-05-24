@@ -1,7 +1,7 @@
 // model envelope
 // {id: 0, name: "", limit: 0}
 
-// TODO: move helper funcs to other file
+// TODO: move helper funcs to other file, DRY input verification
 
 const express = require('express'); 
 const app = express();
@@ -30,7 +30,7 @@ let totalFunds = 0;
 app.use(bodyParser.json());
 
 app.get('/', (req, res, next) => {
-    res.send('Welcome! Endpoints: GET /envelopes, GET /envelopes/:id, POST /envelopes, PUT /envelopes/:id (to update basic info only), POST /envelopes/transfer/:from/:to, DELETE /envelopes/:id');
+    res.send('Welcome! Endpoints: GET /envelopes, GET /envelopes/:id, POST /envelopes, PUT /envelopes/:id (to update basic info only), POST /envelopes/spend/:id, POST /envelopes/transfer/:from/:to, DELETE /envelopes/:id');
 });
 
 app.get('/envelopes', (req, res, next) => {
@@ -63,6 +63,32 @@ app.post('/envelopes', (req, res, next) => {
         envelopes.push(newEnvelope);
         const env = getEnvelopeById(newId);
         res.status(201).send(JSON.stringify(env));
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+});
+
+app.post('/envelopes/spend/:id', (req, res, next) => {
+    // should be sent {amount: 0}
+    try {
+        const id = Number(req.params.id);
+        const envToSpendFrom = getEnvelopeById(id);
+        const amount = req.body.amount;
+        if (typeof amount !== 'number') {
+            throw new Error('Amount to spend must be a number');
+        }
+        if (amount <= 0) {
+            throw new Error('Amount to spend must be greater than 0');
+        }
+        const newLimit = envToSpendFrom.limit - amount;
+        if (newLimit < 0) {
+            throw new Error('Amount provided is greater than funds available');
+        }
+        const envIndex = envelopes.findIndex(env => env.id === id);
+        const updatedEnv = {name: envToSpendFrom.name, limit: newLimit, id: id};
+        envelopes.splice(envIndex, 1, updatedEnv);
+        res.status(201).send(updatedEnv);
     } catch (err) {
         err.status = 400;
         next(err);
