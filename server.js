@@ -52,13 +52,16 @@ app.post('/envelopes', (req, res, next) => {
     // should be sent {name: "", limit: 0}
     try {
         const newEnvelope = req.body;
+        if (newEnvelope.limit < 0 || typeof newEnvelope.limit !== 'number') {
+            throw new Error('Must create envelope with balance 0 or greater');
+        }
         const newId = generateId();
         newEnvelope.id = newId;
         envelopes.push(newEnvelope);
         const env = getEnvelopeById(newId);
         res.status(201).send(JSON.stringify(env));
     } catch (err) {
-        err.status(400);
+        err.status = 400;
         next(err);
     }
 });
