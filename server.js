@@ -66,6 +66,18 @@ app.post('/envelopes', (req, res, next) => {
     }
 });
 
+app.delete('/envelopes/:id', (req, res, next) => {
+    try {
+        const idToDelete = req.params.id;
+        const envToDelete = getEnvelopeById(idToDelete);
+        envelopes.filter(env => env.id !== idToDelete);
+        res.status(204).send();
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+});
+
 // error handler
 app.use((err, req, res, next) => {
     const status = err.status || 500;
