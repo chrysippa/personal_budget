@@ -30,7 +30,7 @@ let totalFunds = 0;
 app.use(bodyParser.json());
 
 app.get('/', (req, res, next) => {
-    res.send('Welcome! Endpoints: GET /envelopes, GET /envelopes/:id, POST /envelopes, PUT /envelopes/:id, POST /envelopes/transfer/:from/:to, DELETE /envelopes/:id');
+    res.send('Welcome! Endpoints: GET /envelopes, GET /envelopes/:id, POST /envelopes, PUT /envelopes/:id (to update basic info only), POST /envelopes/transfer/:from/:to, DELETE /envelopes/:id');
 });
 
 app.get('/envelopes', (req, res, next) => {
@@ -63,6 +63,23 @@ app.post('/envelopes', (req, res, next) => {
         envelopes.push(newEnvelope);
         const env = getEnvelopeById(newId);
         res.status(201).send(JSON.stringify(env));
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+});
+
+app.put('/envelopes/:id', (req, res, next) => {
+    try {
+        const name = req.body.name;
+        const limit = req.body.limit;
+        if (typeof name !== 'string')
+        {
+            throw new Error('Name must be a string');
+        }
+        if (typeof limit !== 'number' || limit < 0) {
+            throw new Error('Limit must be a number 0 or greater');
+        }
     } catch (err) {
         err.status = 400;
         next(err);
