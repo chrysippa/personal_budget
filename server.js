@@ -30,7 +30,7 @@ let totalFunds = 0;
 app.use(bodyParser.json());
 
 app.get('/', (req, res, next) => {
-    res.send('Hello world!');
+    res.send('Welcome! Endpoints: GET /envelopes, GET /envelopes/:id, POST /envelopes, PUT /envelopes/:id, POST /envelopes/transfer/:from/:to, DELETE /envelopes/:id');
 });
 
 app.get('/envelopes', (req, res, next) => {
