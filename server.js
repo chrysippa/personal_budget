@@ -36,14 +36,8 @@ app.get('/envelopes', (req, res, next) => {
 });
 
 app.get('/envelopes/:id', (req, res, next) => {
-    try {
-        const id = Number(req.params.id);
-        const env = helpers.getEnvelopeById(id);
-        res.send(JSON.stringify(env));
-    } catch (err) {
-        err.status = 404;
-        next(err);
-    }
+    const env = helpers.getEnvelopeById(req.id);
+    res.send(env);
 });
 
 app.post('/envelopes', (req, res, next) => {
@@ -70,8 +64,7 @@ app.post('/envelopes', (req, res, next) => {
 app.post('/envelopes/spend/:id', (req, res, next) => {
     // should be sent {amount: 0}
     try {
-        const id = Number(req.params.id);
-        const envToSpendFrom = helpers.getEnvelopeById(id);
+        const envToSpendFrom = helpers.getEnvelopeById(req.id);
         const amount = req.body.amount;
         if (typeof amount !== 'number') {
             throw new Error('Amount to spend must be a number');
@@ -83,9 +76,8 @@ app.post('/envelopes/spend/:id', (req, res, next) => {
         if (newLimit < 0) {
             throw new Error('Amount provided is greater than funds available');
         }
-        const envIndex = envelopes.findIndex(env => env.id === id);
-        envelopes[envIndex].limit = newLimit;
-        res.status(201).send(envelopes[envIndex]);
+        envelopes[req.index].limit = newLimit;
+        res.status(201).send(envelopes[req.index]);
     } catch (err) {
         err.status = 400;
         next(err);
@@ -129,13 +121,9 @@ app.put('/envelopes/:id', (req, res, next) => {
         if (typeof limit !== 'number' || limit < 0) {
             throw new Error('Limit must be a number 0 or greater');
         }
-        const envIndex = envelopes.findIndex(env => env.id === Number(req.params.id));
-        if (envIndex === -1) {
-            throw new Error('Envelope not found');
-        }
-        envelopes[envIndex].name = name;
-        envelopes[envIndex].limit = limit;
-        res.send(envelopes[envIndex]);
+        envelopes[req.index].name = name;
+        envelopes[req.index].limit = limit;
+        res.send(envelopes[req.index]);
     } catch (err) {
         err.status = 400;
         next(err);
@@ -143,15 +131,8 @@ app.put('/envelopes/:id', (req, res, next) => {
 });
 
 app.delete('/envelopes/:id', (req, res, next) => {
-    try {
-        const idToDelete = Number(req.params.id);
-        const envToDelete = helpers.getEnvelopeById(idToDelete);
-        envelopes = envelopes.filter(env => env.id !== idToDelete);
-        res.status(204).send();
-    } catch (err) {
-        err.status = 400;
-        next(err);
-    }
+    envelopes = envelopes.filter(env => env.id !== req.id);
+    res.status(204).send();
 });
 
 // error handler
