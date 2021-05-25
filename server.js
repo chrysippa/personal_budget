@@ -116,6 +116,13 @@ app.put('/envelopes/:id', (req, res, next) => {
         if (typeof limit !== 'number' || limit < 0) {
             throw new Error('Limit must be a number 0 or greater');
         }
+        const envIndex = envelopes.findIndex(env => env.id === Number(req.params.id));
+        if (envIndex === -1) {
+            throw new Error('Envelope not found');
+        }
+        envelopes[envIndex].name = name;
+        envelopes[envIndex].limit = limit;
+        res.send(envelopes[envIndex]);
     } catch (err) {
         err.status = 400;
         next(err);
