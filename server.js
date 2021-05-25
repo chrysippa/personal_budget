@@ -95,6 +95,32 @@ app.post('/envelopes/spend/:id', (req, res, next) => {
     }
 });
 
+app.post('/envelopes/transfer/:fromId/:toId', (req, res, next) => {
+    // should be sent {amount: 0}
+    try {
+        const fromEnv = getEnvelopeById(req.params.fromId);
+        const toEnv = getEnvelopeById(req.params.toId);
+        const amount = req.body.amount;
+        if (typeof amount !== 'number') {
+            throw new Error('Amount to transfer must be a number');
+        }
+        if (amount <= 0) {
+            throw new Error('Amount to transfer must be greater than 0');
+        }
+        if (amount > fromEnv.limit) {
+            throw new Error('Amount provided is greater than funds available');
+        }
+        const fromIndex = envelopes.findIndex(env => env.id === fromEnv.id);
+        const toIndex = envelopes.findIndex(env => env.id === toEnv.id);
+        envelopes[fromIndex].limit -= amount;
+        envelopes[toIndex].limit += amount;
+        res.status(201).send([envelopes[fromIndex], envelopes[toIndex]]);
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+});
+
 app.put('/envelopes/:id', (req, res, next) => {
     try {
         const name = req.body.name;
