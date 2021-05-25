@@ -16,7 +16,10 @@ Users can:
 - Transfer money from one envelope to another, eg, from a "dining out" category to a "groceries" category, providing for flexibility
 
 ## Setup
-This project is not yet deployed online. Clone it to access on your local machine - first ensure you have Node.js and npm installed.
+This project is not yet deployed online. 
+
+Clone it to access on your local machine - first ensure you have Node.js and npm installed.
+
 In the project directory, run to install dependencies:
 `npm install`
 Still in the project directory, start the server:  (default port is 3000)
