@@ -21,16 +21,24 @@ This project is not yet deployed online.
 Clone it to access on your local machine - first ensure you have Node.js and npm installed.
 
 In the project directory, run to install dependencies:
+
 `npm install`
+
 Still in the project directory, start the server:  (default port is 3000)
+
 `node server.js`
+
 To use, prefix all endpoints with localhost and port number, eg:
+
 `localhost:3000/envelopes`
 
 ## Usage
 An envelope is a JavaScript object with an id (number), name (string), and monthly limit (number):
+
 `{"name": "utilities", "limit": 100, "id": 1}`
+
 Unique IDs are assigned by the API and used to access envelopes once created. 
+
 Refer to the endpoints listed below for functionality. Some endpoints require a JSON body.
 
 ## Endpoints
@@ -60,6 +68,7 @@ Project is: _on hiatus_ (until I reach part 2 of the project and add a database 
 
 ## Room for Improvement
 This project is a work in progress.
+
 To do:
 - Refactor and improve verification for user input
 - Alter homepage to return an HTML file with endpoint information
