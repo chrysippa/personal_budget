@@ -14,6 +14,19 @@ let envelopes = [];
 
 app.use(bodyParser.json());
 
+app.param('id', (req, res, next, id) => {
+    const idAsNum = Number(id);
+    const index = envelopes.findIndex(env => env.id === idAsNum);
+    if (index === -1) {
+        const err =  new Error('Envelope not found');
+        err.status = 404;
+        next(err);
+    }
+    req.id = idAsNum;
+    req.index = index;
+    next();
+});
+
 app.get('/', (req, res, next) => {
     res.send('Welcome! Endpoints: GET /envelopes, GET /envelopes/:id, POST /envelopes, PUT /envelopes/:id (to update basic info only), POST /envelopes/spend/:id, POST /envelopes/transfer/:from/:to, DELETE /envelopes/:id');
 });
