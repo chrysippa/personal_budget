@@ -1,31 +1,16 @@
 // model envelope
 // {id: 0, name: "", limit: 0}
 
-// TODO: move helper funcs to other file, DRY input verification
+// TODO: DRY input verification
 
 const express = require('express'); 
 const app = express();
 const bodyParser = require('body-parser');
+const helpers = require('./helpers.js');
 
 const PORT = 3000;
 
-let idIncrementor = 0;
-const generateId = () => {
-    idIncrementor++;
-    return idIncrementor;
-};
-
-const getEnvelopeById = (id) => {
-    const foundEnvelope = envelopes.find(e => e.id === id);
-    if (foundEnvelope) {
-        return foundEnvelope;
-    } else {
-        throw new Error("Envelope not found");
-    }
-};
-
 let envelopes = [];
-let totalFunds = 0;
 
 app.use(bodyParser.json());
 
@@ -40,7 +25,7 @@ app.get('/envelopes', (req, res, next) => {
 app.get('/envelopes/:id', (req, res, next) => {
     try {
         const id = Number(req.params.id);
-        const env = getEnvelopeById(id);
+        const env = helpers.getEnvelopeById(id);
         res.send(JSON.stringify(env));
     } catch (err) {
         err.status = 404;
@@ -58,10 +43,10 @@ app.post('/envelopes', (req, res, next) => {
         if (typeof newEnvelope.name !== 'string') {
             throw new Error('Envelope name must be a string');
         }
-        const newId = generateId();
+        const newId = helpers.generateId();
         newEnvelope.id = newId;
         envelopes.push(newEnvelope);
-        const env = getEnvelopeById(newId);
+        const env = helpers.getEnvelopeById(newId);
         res.status(201).send(JSON.stringify(env));
     } catch (err) {
         err.status = 400;
@@ -73,7 +58,7 @@ app.post('/envelopes/spend/:id', (req, res, next) => {
     // should be sent {amount: 0}
     try {
         const id = Number(req.params.id);
-        const envToSpendFrom = getEnvelopeById(id);
+        const envToSpendFrom = helpers.getEnvelopeById(id);
         const amount = req.body.amount;
         if (typeof amount !== 'number') {
             throw new Error('Amount to spend must be a number');
@@ -97,8 +82,8 @@ app.post('/envelopes/spend/:id', (req, res, next) => {
 app.post('/envelopes/transfer/:fromId/:toId', (req, res, next) => {
     // should be sent {amount: 0}
     try {
-        const fromEnv = getEnvelopeById(req.params.fromId);
-        const toEnv = getEnvelopeById(req.params.toId);
+        const fromEnv = helpers.getEnvelopeById(req.params.fromId);
+        const toEnv = helpers.getEnvelopeById(req.params.toId);
         const amount = req.body.amount;
         if (typeof amount !== 'number') {
             throw new Error('Amount to transfer must be a number');
@@ -140,7 +125,7 @@ app.put('/envelopes/:id', (req, res, next) => {
 app.delete('/envelopes/:id', (req, res, next) => {
     try {
         const idToDelete = Number(req.params.id);
-        const envToDelete = getEnvelopeById(idToDelete);
+        const envToDelete = helpers.getEnvelopeById(idToDelete);
         envelopes = envelopes.filter(env => env.id !== idToDelete);
         res.status(204).send();
     } catch (err) {
