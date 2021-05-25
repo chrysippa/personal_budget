@@ -86,9 +86,8 @@ app.post('/envelopes/spend/:id', (req, res, next) => {
             throw new Error('Amount provided is greater than funds available');
         }
         const envIndex = envelopes.findIndex(env => env.id === id);
-        const updatedEnv = {name: envToSpendFrom.name, limit: newLimit, id: id};
-        envelopes.splice(envIndex, 1, updatedEnv);
-        res.status(201).send(updatedEnv);
+        envelopes[envIndex].limit = newLimit;
+        res.status(201).send(envelopes[envIndex]);
     } catch (err) {
         err.status = 400;
         next(err);
