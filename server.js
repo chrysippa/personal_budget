@@ -101,8 +101,8 @@ app.post('/envelopes/spend/:id', (req, res, next) => {
 app.post('/envelopes/transfer/:fromId/:toId', (req, res, next) => {
     // should be sent {amount: 0}
     try {
-        const fromEnv = getEnvelopeById(req.params.fromId);
-        const toEnv = getEnvelopeById(req.params.toId);
+        const fromEnv = getEnvelopeById(Number(req.params.fromId));
+        const toEnv = getEnvelopeById(Number(req.params.toId));
         const amount = req.body.amount;
         if (typeof amount !== 'number') {
             throw new Error('Amount to transfer must be a number');
