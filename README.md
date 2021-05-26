@@ -43,25 +43,25 @@ Refer to the endpoints listed below for functionality. Some endpoints require a 
 
 ## Endpoints
 #### GET requests
-| Endpoint      | Description                             |
-|---------------|-----------------------------------------|
-| /             | Returns a listing of endpoints          |
-| /envelopes    | Returns an array of all envelopes       |
-| /envelopes/id | Returns envelope object specified by ID |
+| Endpoint      | Description                      | Return value              |
+|---------------|----------------------------------|---------------------------|
+| /             | Returns a listing of endpoints   | text/html                 |
+| /envelopes    | Returns all envelopes            | Array of envelope objects |
+| /envelopes/id | Returns envelope specified by ID | Envelope object           |
 #### POST requests
-| Endpoint                        | Description                                                | JSON-formatted body (required) |
-|---------------------------------|------------------------------------------------------------|--------------------------------|
-| /envelopes                      | Creates envelope                                           | {"name": "", "limit": 0}       |
-| /envelopes/spend/id             | Withdraws from envelope, if sufficient funds available. Returns updated envelopes     | {"amount": 0}                  |
-| /envelopes/transfer/fromId/toId | Transfers between envelopes, if sufficient funds available. Returns array of updated envelopes | {"amount": 0}                  |
+| Endpoint                        | Description                                                | JSON-formatted body (required) | Return value                      |
+|---------------------------------|------------------------------------------------------------|--------------------------------|-----------------------------------|
+| /envelopes                      | Creates envelope                                           | {"name": "", "limit": 0}       | New envelope object               |
+| /envelopes/spend/id             | Withdraws from envelope, if sufficient funds available     | {"amount": 0}                  | Updated envelope object           |
+| /envelopes/transfer/fromId/toId | Transfers between envelopes, if sufficient funds available | {"amount": 0}                  | Array of updated envelope objects |
 #### PUT requests
-| Endpoint      | Description                     | JSON-formatted body (required) |
-|---------------|---------------------------------|--------------------------------|
-| /envelopes/id | Updates envelope name and limit | {"name": "", "limit": 0}       |
+| Endpoint      | Description                     | JSON-formatted body (required) | Return value            |
+|---------------|---------------------------------|--------------------------------|-------------------------|
+| /envelopes/id | Updates envelope name and limit | {"name": "", "limit": 0}       | Updated envelope object |
 #### DELETE requests
-| Endpoint      | Description                |
-|---------------|----------------------------|
-| /envelopes/id | Deletes specified envelope |
+| Endpoint      | Description                | Return value |
+|---------------|----------------------------|--------------|
+| /envelopes/id | Deletes specified envelope | None         |
 
 ## Project Status
 Project is: _on hiatus_ (until I reach part 2 of the project and add a database to store data).
