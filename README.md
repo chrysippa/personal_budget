@@ -52,8 +52,8 @@ Refer to the endpoints listed below for functionality. Some endpoints require a 
 | Endpoint                        | Description                                                | JSON-formatted body (required) |
 |---------------------------------|------------------------------------------------------------|--------------------------------|
 | /envelopes                      | Creates envelope                                           | {"name": "", "limit": 0}       |
-| /envelopes/spend/id             | Withdraws from envelope, if sufficient funds available     | {"amount": 0}                  |
-| /envelopes/transfer/fromId/toId | Transfers between envelopes, if sufficient funds available | {"amount": 0}                  |
+| /envelopes/spend/id             | Withdraws from envelope, if sufficient funds available. Returns updated envelopes     | {"amount": 0}                  |
+| /envelopes/transfer/fromId/toId | Transfers between envelopes, if sufficient funds available. Returns array of updated envelopes | {"amount": 0}                  |
 #### PUT requests
 | Endpoint      | Description                     | JSON-formatted body (required) |
 |---------------|---------------------------------|--------------------------------|
