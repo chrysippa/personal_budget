@@ -6,11 +6,25 @@
 const express = require('express'); 
 const app = express();
 const bodyParser = require('body-parser');
-const helpers = require('./helpers.js');
 
 const PORT = 3000;
 
 let envelopes = [];
+
+let idIncrementor = 0;
+const generateId = () => {
+    idIncrementor++;
+    return idIncrementor;
+};
+
+const getEnvelopeById = (id) => {
+    const foundEnvelope = envelopes.find(e => e.id === id);
+    if (foundEnvelope) {
+        return foundEnvelope;
+    } else {
+        throw new Error("Envelope not found");
+    }
+};
 
 app.use(bodyParser.json());
 
@@ -36,7 +50,7 @@ app.get('/envelopes', (req, res, next) => {
 });
 
 app.get('/envelopes/:id', (req, res, next) => {
-    const env = helpers.getEnvelopeById(req.id);
+    const env = getEnvelopeById(req.id);
     res.send(env);
 });
 
@@ -50,10 +64,10 @@ app.post('/envelopes', (req, res, next) => {
         if (typeof newEnvelope.name !== 'string') {
             throw new Error('Envelope name must be a string');
         }
-        const newId = helpers.generateId();
+        const newId = generateId();
         newEnvelope.id = newId;
         envelopes.push(newEnvelope);
-        const env = helpers.getEnvelopeById(newId);
+        const env = getEnvelopeById(newId);
         res.status(201).send(JSON.stringify(env));
     } catch (err) {
         err.status = 400;
@@ -64,7 +78,7 @@ app.post('/envelopes', (req, res, next) => {
 app.post('/envelopes/spend/:id', (req, res, next) => {
     // should be sent {amount: 0}
     try {
-        const envToSpendFrom = helpers.getEnvelopeById(req.id);
+        const envToSpendFrom = getEnvelopeById(req.id);
         const amount = req.body.amount;
         if (typeof amount !== 'number') {
             throw new Error('Amount to spend must be a number');
@@ -87,8 +101,8 @@ app.post('/envelopes/spend/:id', (req, res, next) => {
 app.post('/envelopes/transfer/:fromId/:toId', (req, res, next) => {
     // should be sent {amount: 0}
     try {
-        const fromEnv = helpers.getEnvelopeById(req.params.fromId);
-        const toEnv = helpers.getEnvelopeById(req.params.toId);
+        const fromEnv = getEnvelopeById(req.params.fromId);
+        const toEnv = getEnvelopeById(req.params.toId);
         const amount = req.body.amount;
         if (typeof amount !== 'number') {
             throw new Error('Amount to transfer must be a number');
